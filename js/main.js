@@ -6,6 +6,8 @@ canvas.height = canvas.parentElement.clientHeight
 
 let particlesArr = []
 
+const STEPS = 50
+
 // handle mouse
 const mouse = {
     x: null,
@@ -61,9 +63,9 @@ function init() {
         particlesArr.push(new Particle(x, y))   
     }
     */
-   
-    for (let i = 0; i < canvas.width; i+=50) {
-        for (let j = 0; j < canvas.height; j+=50) {
+       
+    for (let i = 0; i < canvas.width; i+=STEPS) {
+        for (let j = 0; j < canvas.height; j+=STEPS) {
             particlesArr.push(new Particle(i, j))   
         }
     }
@@ -74,6 +76,7 @@ init()
 
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+
     for (let i = 0; i < particlesArr.length; i++) {
         particlesArr[i].draw()
         particlesArr[i].update()
@@ -81,17 +84,51 @@ function animate() {
     requestAnimationFrame(animate)
 }
 
-animate()
+//animate()
 
 
 // Shapes =========
 
 class Rect {
-    constructor(start_x, start_y, width, height /*, color */) {
-        this.x = start_x
-        this.y = start_y
+    constructor(startX, startY, width, height /*, color */) {
+        this.sX = startX
+        this.sY = startY
+
         this.width = width
         this.height = height
+
+        this.eX = this.sX + this.width
+        this.eY = this.sY + this.height
+
+        this.coordinates = []
         //this.color = color
     }
+
+    create_points(steps) {
+        let realStartX = this.sX * steps
+        let realStartY = this.sY * steps
+        let realEndX = this.eX * steps
+        let realEndY = this.eY * steps
+
+        let dx = this.eX - this.sX
+        let dy = this.eY - this.sY
+
+    
+        for (let i = 0; i < dx; i++) {
+            for (let j = 0; j < dy; j++) {
+                this.coordinates.push(new Particle(realStartX + (i * steps), realStartY + (j * steps)))
+            }
+        }
+    }
+
+    draw() {
+        console.log(this.coordinates)
+        for (let i = 0; i < this.coordinates.length; i++) {
+            this.coordinates[i].draw() 
+        }
+    }
 }
+
+test = new Rect(1, 2, 10, 5)
+test.create_points(STEPS)
+test.draw()
