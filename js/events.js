@@ -14,7 +14,7 @@ globals.canvas.addEventListener('mousemove', function(e) {
 
     for (let i = 0; i < globals.shapes.length; i++) {
         if(globals.shapes[i].isMouseHover()) {
-            console.log('HOVER')
+            
         }
     }
 })

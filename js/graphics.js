@@ -22,15 +22,33 @@ class Particle {
     }
 
     update() {
-
         let dx = globals.mouse.x - this.x
         let dy = globals.mouse.y - this.y
         let distance = Math.sqrt((dx * dx) + (dy * dy))
-        if(distance < 50) {
-            this.size = 10
+
+        let forDirectionX = dx / distance
+        let forDirectionY = dy / distance
+
+        let maxDistance = globals.mouse.radius
+
+        let force = (maxDistance - distance) / maxDistance
+
+        let changeX = forDirectionX * force * this.density
+        let changeY = forDirectionY * force * this.density
+
+        if(distance < globals.mouse.radius + 10) {
+            this.x -= changeX
+            this.y -= changeY
         }
         else {
-            this.size = 3
+            if(this.x != this.baseX) {
+                let dx = this.x - this.baseX
+                this.x -= dx/8
+            }
+            if(this.y != this.baseY) {
+                let dy = this.y - this.baseY
+                this.y -= dy/8
+            }
         }
     }
 }
@@ -49,6 +67,7 @@ class Shape {
     draw() {
         for (let i = 0; i < this.coordinates.length; i++) {
             this.coordinates[i].draw() 
+            this.coordinates[i].update()
         }
     }
 
@@ -119,16 +138,27 @@ class Rect extends Shape {
 
 
 
-function draw(shapes) {
+function draw() {
     globals.ctx.clearRect(0, 0, globals.canvas.width, globals.canvas.height)
 
-    for (let i = 0; i < shapes.length; i++) {
-        shapes[i].draw()
+    for (let i = 0; i < globals.shapes.length; i++) {
+        globals.shapes[i].draw()
     }   
+}
+
+
+function animate() {
+    globals.ctx.clearRect(0, 0, globals.canvas.width, globals.canvas.height)
+
+    for (let i = 0; i < globals.shapes.length; i++) {
+        globals.shapes[i].draw()
+    }   
+    requestAnimationFrame(animate)
 }
 
 export default {
     draw,
+    animate,
     Particle,
     Shape, 
     Rect

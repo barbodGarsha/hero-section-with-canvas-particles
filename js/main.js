@@ -7,8 +7,15 @@ let particlesArr = []
 function init() {
     globals.shapes = []
    
-    globals.shapes.push(new graphics.Rect('t1', 1, 1, 2, 2, false, 'red'))
-    globals.shapes.push(new graphics.Rect('t2', 2, 2, 2, 2, true, 'green'))
+    globals.shapes.push(new graphics.Rect('designs', 0, 0, 5, 5, true, 'red'))
+    globals.shapes.push(new graphics.Rect('designs', 3, 3, 5, 5, true, 'red'))
+    globals.shapes.push(new graphics.Rect('designs', globals.canvas.width / globals.STEPS - 2, 0, 2, 2, true, 'red'))
+    globals.shapes.push(new graphics.Rect('designs', globals.canvas.width / globals.STEPS - 5, globals.canvas.height / globals.STEPS - 5, 5, 5, true, 'green'))
+    globals.shapes.push(new graphics.Rect('designs', globals.canvas.width / globals.STEPS - 7, globals.canvas.height / globals.STEPS - 7, 5, 5, false, 'red'))
+    globals.shapes.push(new graphics.Rect('designs', 0, globals.canvas.height / globals.STEPS - 5, 5, 20, true, 'green'))
+
+    globals.shapes.push(new graphics.Rect('designs', 0, globals.canvas.height / globals.STEPS / 3 *  2, globals.canvas.width / globals.STEPS, globals.canvas.height / globals.STEPS / 4, true, 'yellow'))
+    //globals.shapes.push(new graphics.Rect('t2', 2, 2, 2, 2, true, 'green'))
 
     for (let i = 0; i < globals.shapes.length; i++) {
         globals.shapes[i].create_points(globals.STEPS)        
@@ -17,19 +24,8 @@ function init() {
 
 init()
 
-graphics.draw(globals.shapes)
+graphics.draw()
 
-/*
 
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    for (let i = 0; i < shapes.length; i++) {
-        shapes[i].draw()
-    }   
-    requestAnimationFrame(animate)
-}
-
-animate()
-*/
+graphics.animate()
 

@@ -6,13 +6,13 @@ canvas.height = canvas.parentElement.clientHeight
 
 let shapes = []
 
-const STEPS = 70
+const STEPS = 25
 
 // handle mouse
 const mouse = {
     x: null,
     y: null,
-    radius: 150
+    radius: 50
 }
 
 export default {
