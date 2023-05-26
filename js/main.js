@@ -15,9 +15,17 @@ const mouse = {
     radius: 150
 }
 
-window.addEventListener('mousemove', function(e) {
-    mouse.x = e.x
-    mouse.y = e.y
+canvas.addEventListener('mousemove', function(e) {
+
+    const target = e.target;
+
+    // Get the bounding rectangle of target
+    const rect = target.getBoundingClientRect();
+
+    // Mouse position
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+
 })
 
 
@@ -72,20 +80,7 @@ function init() {
     
 }
 
-init()
-
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    for (let i = 0; i < particlesArr.length; i++) {
-        particlesArr[i].draw()
-        particlesArr[i].update()
-    }
-    requestAnimationFrame(animate)
-}
-
-//animate()
-
+//init()
 
 // Shapes =========
 
@@ -100,6 +95,11 @@ class Rect {
         this.eX = this.sX + this.width
         this.eY = this.sY + this.height
 
+        this.realStartX = null
+        this.realStartY = null
+        this.realEndX = null
+        this.realEndY = null
+       
         this.fill = fill
 
         this.coordinates = []
@@ -107,26 +107,26 @@ class Rect {
     }
 
     create_points(steps) {
-        let realStartX = this.sX * steps
-        let realStartY = this.sY * steps
-        let realEndX = this.eX * steps
-        let realEndY = this.eY * steps
-
+       
+        this.realStartX = this.sX * steps
+        this.realStartY = this.sY * steps
+        this.realEndX = this.eX * steps
+        this.realEndY = this.eY * steps
+        
         let dx = this.eX - this.sX
         let dy = this.eY - this.sY
 
     
-        for (let i = 0; i < dx; i++) {
-            for (let j = 0; j < dy; j++) {
+        for (let i = 0; i <= dx; i++) {
+            for (let j = 0; j <= dy; j++) {
                 if(!this.fill) {
-                    if(j != 0 && j != dy - 1) {            
-                        if(i != 0 && i != dx - 1) {
-                            console.log('s')
+                    if(j != 0 && j != dy) {            
+                        if(i != 0 && i != dx) {
                             continue
                         }
                     }
                 }
-                this.coordinates.push(new Particle(realStartX + (i * steps), realStartY + (j * steps)))
+                this.coordinates.push(new Particle(this.realStartX + (i * steps), this.realStartY + (j * steps)))
             }
         }
     }
@@ -136,8 +136,36 @@ class Rect {
             this.coordinates[i].draw() 
         }
     }
+
+    isMouseHover() {
+        if(mouse.x < this.realEndX && mouse.x > this.realStartX) {
+            if(mouse.y < this.realEndY && mouse.y > this.realStartY) {
+                return true
+            }   
+        }
+        
+        return false
+    }
 }
 
-test = new Rect(1, 2, 5, 5, false)
+
+test = new Rect(1, 1, 2, 2, false)
 test.create_points(STEPS)
 test.draw()
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    test.draw()
+    if(test.isMouseHover()) {
+        document.body.style.cursor = "pointer"
+    }
+    else {
+        document.body.style.cursor = "auto"
+    }
+    requestAnimationFrame(animate)
+}
+
+animate()
+
+
