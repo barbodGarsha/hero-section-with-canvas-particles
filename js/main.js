@@ -6,7 +6,7 @@ canvas.height = canvas.parentElement.clientHeight
 
 let particlesArr = []
 
-const STEPS = 50
+const STEPS = 70
 
 // handle mouse
 const mouse = {
@@ -90,7 +90,7 @@ function animate() {
 // Shapes =========
 
 class Rect {
-    constructor(startX, startY, width, height /*, color */) {
+    constructor(startX, startY, width, height, fill /*, color */) {
         this.sX = startX
         this.sY = startY
 
@@ -99,6 +99,8 @@ class Rect {
 
         this.eX = this.sX + this.width
         this.eY = this.sY + this.height
+
+        this.fill = fill
 
         this.coordinates = []
         //this.color = color
@@ -116,19 +118,26 @@ class Rect {
     
         for (let i = 0; i < dx; i++) {
             for (let j = 0; j < dy; j++) {
+                if(!this.fill) {
+                    if(j != 0 && j != dy - 1) {            
+                        if(i != 0 && i != dx - 1) {
+                            console.log('s')
+                            continue
+                        }
+                    }
+                }
                 this.coordinates.push(new Particle(realStartX + (i * steps), realStartY + (j * steps)))
             }
         }
     }
 
     draw() {
-        console.log(this.coordinates)
         for (let i = 0; i < this.coordinates.length; i++) {
             this.coordinates[i].draw() 
         }
     }
 }
 
-test = new Rect(1, 2, 10, 5)
+test = new Rect(1, 2, 5, 5, false)
 test.create_points(STEPS)
 test.draw()
