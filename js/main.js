@@ -5,6 +5,7 @@ canvas.width = canvas.parentElement.clientWidth
 canvas.height = canvas.parentElement.clientHeight
 
 let particlesArr = []
+let shapes = []
 
 const STEPS = 70
 
@@ -26,13 +27,19 @@ canvas.addEventListener('mousemove', function(e) {
     mouse.x = e.clientX - rect.left;
     mouse.y = e.clientY - rect.top;
 
+    for (let i = 0; i < shapes.length; i++) {
+        if(shapes[i].isMouseHover()) {
+            console.log('HOVER')
+        }
+    }
 })
 
 
 class Particle {
-    constructor(x, y) {
+    constructor(x, y, color) {
         this.x = x
         this.y = y
+        this.color = color
         this.size = 3
         this.baseX = this.x
         this.baseY = this.y
@@ -40,7 +47,7 @@ class Particle {
     }
 
     draw() {
-        ctx.fillStyle = 'white'
+        ctx.fillStyle = this.color
         ctx.beginPath()
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
         ctx.closePath()
@@ -61,31 +68,32 @@ class Particle {
     }
 }
 
-function init() {
-    particlesArr = []
-
-   
-    /* for (let i = 0; i < 500; i++) {
-        let x = Math.random() * canvas.width
-        let y = Math.random() * canvas.height
-        particlesArr.push(new Particle(x, y))   
-    }
-    */
-       
-    for (let i = 0; i < canvas.width; i+=STEPS) {
-        for (let j = 0; j < canvas.height; j+=STEPS) {
-            particlesArr.push(new Particle(i, j))   
-        }
-    }
-    
-}
-
-//init()
-
 // Shapes =========
 
-class Rect {
-    constructor(startX, startY, width, height, fill /*, color */) {
+class Shape {
+    constructor(name) {
+        this.name = name
+    }
+
+    create_points(steps) {
+        return null
+    }
+
+    draw() {
+        for (let i = 0; i < this.coordinates.length; i++) {
+            this.coordinates[i].draw() 
+        }
+    }
+
+    isMouseHover() {
+        return null
+    }
+}
+
+class Rect extends Shape {
+    constructor(name, startX, startY, width, height, fill, color) {
+        super(name)
+
         this.sX = startX
         this.sY = startY
 
@@ -103,7 +111,7 @@ class Rect {
         this.fill = fill
 
         this.coordinates = []
-        //this.color = color
+        this.color = color
     }
 
     create_points(steps) {
@@ -126,14 +134,8 @@ class Rect {
                         }
                     }
                 }
-                this.coordinates.push(new Particle(this.realStartX + (i * steps), this.realStartY + (j * steps)))
+                this.coordinates.push(new Particle(this.realStartX + (i * steps), this.realStartY + (j * steps), this.color))
             }
-        }
-    }
-
-    draw() {
-        for (let i = 0; i < this.coordinates.length; i++) {
-            this.coordinates[i].draw() 
         }
     }
 
@@ -148,24 +150,40 @@ class Rect {
     }
 }
 
+function init() {
+    shapes = []
+   
+    shapes.push(new Rect('t1', 1, 1, 2, 2, false, 'red'))
+    shapes.push(new Rect('t2', 2, 2, 2, 2, true, 'green'))
 
-test = new Rect(1, 1, 2, 2, false)
-test.create_points(STEPS)
-test.draw()
+    for (let i = 0; i < shapes.length; i++) {
+        shapes[i].create_points(STEPS)        
+    }
+}
+
+init()
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    for (let i = 0; i < shapes.length; i++) {
+        shapes[i].draw()
+    }   
+}
+
+draw()
+
+/*
 
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    test.draw()
-    if(test.isMouseHover()) {
-        document.body.style.cursor = "pointer"
-    }
-    else {
-        document.body.style.cursor = "auto"
-    }
+    for (let i = 0; i < shapes.length; i++) {
+        shapes[i].draw()
+    }   
     requestAnimationFrame(animate)
 }
 
 animate()
-
+*/
 
